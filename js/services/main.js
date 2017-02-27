@@ -7,13 +7,28 @@
 	'use strict';
 
 	angular.module('app-services-main',[])
-		.service('MainService',[function(){
+		.service('MainService',['$window',function($window){
 
-			var todos = [
+			/*var todos = [
 				{id:1,text:'事件1',completed:false},
 				{id:2,text:'事件2',completed:true},
 				{id:3,text:'事件3',completed:false}
-			];
+			];*/
+			/**
+			 * angular在使用JSON.stringify(obj),会自动在对象中添加$$hashKey:XX的键值对
+			 * 该键值对的值会重复，造成ng-repeat的重复键的bug
+			 * 如果ng-repeat结合了filter过滤器，那么使用track by 关键词又会造成filter:notArray错误
+			 * 这里是有angular.Json() 替换JSON.stringify()方法，不会生成改键值对
+			 * @type {Storage}
+             */
+			var storage = $window.localStorage;
+			var todos = storage['list'] ? JSON.parse(storage['list']) : [];
+
+			this.save = function(){
+				storage['list'] = angular.toJson(todos);
+			};
+
+
 
 			//暴露数据
 			this.get = function(){
@@ -38,7 +53,8 @@
 					id:getId(),
 					text: text,
 					completed : false
-				})
+				});
+				this.save();
 			};
 			//删除
 			this.remove = function (id) {
@@ -47,6 +63,7 @@
 						todos.splice(i,1)
 					}
 				}
+				this.save();
 			};
 
 			//清除
@@ -60,6 +77,7 @@
 				}
 
 				todos = arr;
+				this.save();
 				return todos;
 			};
 
@@ -81,6 +99,7 @@
 					todos[i].completed = now;
 				}
 				now = !now;
+				this.save();
 			};
 
 

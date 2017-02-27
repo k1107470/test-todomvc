@@ -64,8 +64,8 @@
 			// 状态筛选
 			$scope.selector = {}; // {} {completed:true} {completed:false}
 			// 取路由中匹配出来的数据
-			var status = $routeParams.status;
-			switch (status) {
+			$scope.status = $routeParams.status;
+			switch ($scope.status) {
 				case 'active':
 					$scope.selector = {completed: false};
 					break;
@@ -77,7 +77,10 @@
 					$scope.selector = {};
 					break;
 			}
-			//本地缓存
+			//单项的切换的缓存方法
+			$scope.toggle = function(){
+				MainService.save();
+			}
 
 		}]);
 })(angular);

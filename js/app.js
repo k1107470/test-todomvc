@@ -5,6 +5,7 @@
 
 	var myApp = angular.module('app', ['ngRoute', 'app.controllers.main']);
 
+
 	//设置路由
 	myApp.config(['$routeProvider','$locationProvider',function($routeProvider,$locationProvider) {
 		$routeProvider
